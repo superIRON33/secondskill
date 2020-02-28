@@ -20,4 +20,8 @@ public interface UserService {
      * @return
      */
     ResultDTO getUserById(Integer id);
+
+    ResultDTO register(String name, Byte gender, Integer age, String telephone, String password);
+
+    ResultDTO login(String telephone, String password);
 }

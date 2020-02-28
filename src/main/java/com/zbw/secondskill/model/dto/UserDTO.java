@@ -1,4 +1,4 @@
-package com.zbw.secondskill.model.viewObject;
+package com.zbw.secondskill.model.dto;
 
 import lombok.Data;
 
