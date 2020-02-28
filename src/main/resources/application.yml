@@ -1,0 +1,17 @@
+server:
+  port: 8080
+  servlet:
+#   配置根路径
+    context-path: /secondsKill
+spring:
+  #  springboot热部署配置
+  devtools:
+    restart:
+      additional-paths: src/main/java
+      enabled: true
+  profiles:
+    active: zbw
+
+mybatis:
+  mapperLocations: classpath:mapping/*.xml
+
