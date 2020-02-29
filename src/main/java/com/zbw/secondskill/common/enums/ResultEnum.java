@@ -53,9 +53,14 @@ public enum ResultEnum {
     LOGIN_FAIL(10006, "手机号或者密码错误"),
 
     /**
-     * 用户id无效
+     * id无效
      */
-    ID_INVALID(20001, "用户id无效");
+    ID_INVALID(10007, "id无效"),
+
+    /**
+     * 添加商品失败
+     */
+    CREATE_ITEM_FAIL(20001, "添加商品失败");
 
     private Integer code;
     private String message;

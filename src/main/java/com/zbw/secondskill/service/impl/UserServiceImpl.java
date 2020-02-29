@@ -24,7 +24,7 @@ import java.security.NoSuchAlgorithmException;
 
 /**
  * @ClassName UserServiceImpl.java
- * @Description //TODO
+ * @Description //用户服务Service
  * @Author ZBW
  * @Date 2020年02月27日 21:52
  **/
@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
+    @Transactional//加入事务注解
     public ResultDTO register(String name, Byte gender, Integer age, String telephone,String password) {
 
         if (StringUtils.isEmpty(telephone) || StringUtils.isEmpty(name) ||

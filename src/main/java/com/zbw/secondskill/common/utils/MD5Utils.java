@@ -14,6 +14,14 @@ import java.security.NoSuchAlgorithmException;
  * @Date 2020年02月28日 16:53
  **/
 public class MD5Utils {
+
+    /**
+     * @Param [String str]
+     * @Return String
+     * @Description 对于用户密码进行加密
+     * @Author zbw
+     * @Time 2020/2/29 23:04
+     */
     public static String EncodeByMD5(String str) throws NoSuchAlgorithmException, UnsupportedEncodingException {
         //确定计算方法
         MessageDigest md5 = MessageDigest.getInstance("MD5");

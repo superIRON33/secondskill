@@ -8,7 +8,7 @@ import java.util.Set;
 
 /**
  * @ClassName ValidatorImpl.java
- * @Description //TODO
+ * @Description //校验实现类
  * @Author ZBW
  * @Date 2020年02月29日 16:18
  **/
@@ -40,9 +40,15 @@ public class ValidatorImpl implements InitializingBean {
         return  result;
     }
 
+    /**
+     * @Param []
+     * @Return void
+     * @Description 将hibernate validator通过工厂的初始化方式使其实例化
+     * @Author zbw
+     * @Time 2020/2/29 23:05
+     */
     @Override
     public void afterPropertiesSet() throws Exception {
-        //将hibernate validator通过工厂的初始化方式使其实例化
         this.validator = Validation.buildDefaultValidatorFactory().getValidator();
     }
 }

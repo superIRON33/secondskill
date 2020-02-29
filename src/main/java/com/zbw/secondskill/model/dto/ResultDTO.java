@@ -13,8 +13,17 @@ import lombok.Data;
 @AllArgsConstructor
 public class ResultDTO {
 
+    /**
+     * 状态码
+     */
     private Integer code;
+    /**
+     * 状态消息
+     */
     private String message;
+    /**
+     * 封装的数据
+     */
     private Object data;
 
     public ResultDTO(ResultEnum result) {

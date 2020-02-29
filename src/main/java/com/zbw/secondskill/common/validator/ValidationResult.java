@@ -8,7 +8,7 @@ import java.util.Map;
 
 /**
  * @ClassName ValidationResult.java
- * @Description //TODO
+ * @Description //Validator校验结果类
  * @Author ZBW
  * @Date 2020年02月29日 16:12
  **/
@@ -17,7 +17,7 @@ public class ValidationResult {
     /**
      * 校验结果是否有错
      */
-    private boolean  hasErrors = false;
+    private boolean hasErrors = false;
 
     /**
      * 存放错误信息的Map
