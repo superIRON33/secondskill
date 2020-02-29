@@ -1,6 +1,6 @@
 package com.zbw.secondskill.controller;
 
-import com.zbw.secondskill.enums.ResultEnum;
+import com.zbw.secondskill.common.enums.ResultEnum;
 import com.zbw.secondskill.model.dto.ResultDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;

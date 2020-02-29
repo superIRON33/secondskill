@@ -1,6 +1,6 @@
 package com.zbw.secondskill.model.dto;
 
-import com.zbw.secondskill.enums.ResultEnum;
+import com.zbw.secondskill.common.enums.ResultEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

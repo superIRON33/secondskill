@@ -1,4 +1,4 @@
-package com.zbw.secondskill.utils;
+package com.zbw.secondskill.common.utils;
 
 import io.netty.handler.codec.base64.Base64Encoder;
 import sun.misc.BASE64Encoder;

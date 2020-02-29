@@ -1,7 +1,8 @@
 package com.zbw.secondskill.service.impl;
 
 import com.sun.tools.internal.ws.wsdl.framework.DuplicateEntityException;
-import com.zbw.secondskill.enums.ResultEnum;
+import com.zbw.secondskill.common.enums.ResultEnum;
+import com.zbw.secondskill.common.validator.ValidatorImpl;
 import com.zbw.secondskill.model.dataobject.UserPasswordDo;
 import com.zbw.secondskill.model.dto.ResultDTO;
 import com.zbw.secondskill.dao.UserDoMapper;
@@ -10,9 +11,8 @@ import com.zbw.secondskill.model.dataobject.UserDo;
 
 import com.zbw.secondskill.model.dto.UserDTO;
 import com.zbw.secondskill.service.UserService;
-import com.zbw.secondskill.utils.MD5Utils;
+import com.zbw.secondskill.common.utils.MD5Utils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.tomcat.util.security.MD5Encoder;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,6 +39,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private HttpServletRequest httpServletRequest;
+
+    @Autowired
+    private ValidatorImpl validator;
 
     @Override
     public ResultDTO getUserById(Integer id) {

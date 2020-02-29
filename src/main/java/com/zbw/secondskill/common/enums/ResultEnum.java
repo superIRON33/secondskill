@@ -1,4 +1,4 @@
-package com.zbw.secondskill.enums;
+package com.zbw.secondskill.common.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
