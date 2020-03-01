@@ -58,9 +58,34 @@ public enum ResultEnum {
     ID_INVALID(10007, "id无效"),
 
     /**
+     * 用户信息不存在
+     */
+    USER_NOT_EXIST(10008, "用户信息不存在"),
+
+    /**
      * 添加商品失败
      */
-    CREATE_ITEM_FAIL(20001, "添加商品失败");
+    CREATE_ITEM_FAIL(20001, "添加商品失败"),
+
+    /**
+     * 商品信息不存在
+     */
+    ITEM_NOT_EXIST(20002, "商品信息不存在"),
+
+    /**
+     * 下单数量异常
+     */
+    AMOUNT_ERROR(20003, "下单数量异常"),
+
+    /**
+     * 库存不足
+     */
+    STOCK_NOT_ENOUGH(20004, "库存不足"),
+
+    /**
+     * 用户还未登陆，不能下单
+     */
+    NOT_LOGIN(20005, "用户还未登陆，不能下单");
 
     private Integer code;
     private String message;

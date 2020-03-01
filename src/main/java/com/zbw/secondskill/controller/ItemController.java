@@ -15,7 +15,7 @@ import java.math.BigDecimal;
  * @Date 2020年03月01日 00:13
  **/
 @RestController
-@CrossOrigin(origins = {"*"} ,allowedHeaders = "true")
+@CrossOrigin(allowCredentials = "true", allowedHeaders = "*")
 @RequestMapping("/item")
 public class ItemController {
 
@@ -35,6 +35,11 @@ public class ItemController {
     @GetMapping(value = "/get")
     public ResultDTO getItem(@RequestParam(name = "id") Integer id) {
         return itemService.getItemById(id);
+    }
+
+    @GetMapping(value = "/list")
+    public ResultDTO listItem() {
+        return itemService.listItem();
     }
 
 }

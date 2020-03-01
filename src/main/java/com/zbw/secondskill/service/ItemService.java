@@ -39,4 +39,22 @@ public interface ItemService {
      * @Time 2020/2/29 22:53
      */
     ResultDTO getItemById(Integer id);
+
+    /**
+     * @Param [Integer itemId, Integer amount]
+     * @Return boolean
+     * @Description 减库存
+     * @Author zbw
+     * @Time 2020/3/1 17:18
+     */
+    boolean decreaseStock(Integer itemId, Integer amount);
+
+    /**
+     * @Param [Integer itemId, Integer amount]
+     * @Return void
+     * @Description 增加销量
+     * @Author zbw
+     * @Time 2020/3/1 20:13
+     */
+    void increaseSales(Integer itemId, Integer amount);
 }

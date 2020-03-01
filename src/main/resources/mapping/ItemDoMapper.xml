@@ -33,6 +33,11 @@
     from item
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <select id="listItem" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from item order by sales DESC;
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     <!--
       WARNING - @mbg.generated
@@ -141,6 +146,11 @@
       description = #{description,jdbcType=VARCHAR},
       sales = #{sales,jdbcType=INTEGER},
       img_url = #{imgUrl,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="increaseSales">
+    update item
+    set sales = sales + #{amount}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

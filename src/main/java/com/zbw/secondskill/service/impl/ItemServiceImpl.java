@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName ItemServiceImpl.java
@@ -84,7 +86,15 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ResultDTO listItem() {
-        return null;
+        List<ItemDo> itemDoList = itemDoMapper.listItem();
+        List<ItemModel> itemModelList = itemDoList.stream().map(itemDo -> {
+            ItemStockDo itemStockDo = itemStockDoMapper.selectByItemId(itemDo.getId());
+            ItemModel itemModel = this.convertModelFromDataObject(itemDo, itemStockDo);
+            return itemModel;
+        }).collect(Collectors.toList());
+        ResultDTO resultDTO = new ResultDTO(ResultEnum.SUCCESS);
+        resultDTO.setData(itemModelList);
+        return resultDTO;
     }
 
     @Override
@@ -96,8 +106,27 @@ public class ItemServiceImpl implements ItemService {
         ItemStockDo itemStockDo = itemStockDoMapper.selectByItemId(itemDo.getId());
         ItemModel itemModel = convertModelFromDataObject(itemDo, itemStockDo);
         ResultDTO resultDTO = new ResultDTO(ResultEnum.SUCCESS);
-        resultDTO.setData(resultDTO);
+        resultDTO.setData(itemModel);
         return resultDTO;
+    }
+
+    @Override
+    @Transactional
+    public boolean decreaseStock(Integer itemId, Integer amount) {
+        int affectedRow = itemStockDoMapper.decreaseStock(itemId, amount);
+        if (affectedRow > 0) {
+            //减库存成功
+            return true;
+        } {
+            //减库存失败
+            return false;
+        }
+    }
+
+    @Override
+    @Transactional
+    public void increaseSales(Integer itemId, Integer amount) {
+        itemDoMapper.increaseSales(itemId, amount);
     }
 
     private ItemModel convertModelFromDataObject(ItemDo itemDo, ItemStockDo itemStockDo) {

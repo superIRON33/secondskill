@@ -104,7 +104,6 @@ public class UserServiceImpl implements UserService {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        System.out.println(pwd);
         if ( !pwd.equals(userPasswordDo.getEncrptPassword()) ) {
             return new ResultDTO(ResultEnum.LOGIN_FAIL);
         }
