@@ -1,26 +1,22 @@
 package com.zbw.secondskill.service.impl;
 
-import com.sun.tools.internal.ws.wsdl.framework.DuplicateEntityException;
-import com.zbw.secondskill.common.enums.ResultEnum;
-import com.zbw.secondskill.common.validator.ValidatorImpl;
-import com.zbw.secondskill.model.dataobject.UserPasswordDo;
-import com.zbw.secondskill.model.dto.ResultDTO;
-import com.zbw.secondskill.dao.UserDoMapper;
-import com.zbw.secondskill.dao.UserPasswordDoMapper;
-import com.zbw.secondskill.model.dataobject.UserDo;
 
-import com.zbw.secondskill.model.dto.UserDTO;
+import com.zbw.secondskill.dao.UserDOMapper;
+import com.zbw.secondskill.dao.UserPasswordDOMapper;
+import com.zbw.secondskill.dataobject.UserDO;
+import com.zbw.secondskill.dataobject.UserPasswordDO;
+import com.zbw.secondskill.error.BusinessException;
+import com.zbw.secondskill.error.EmBusinessError;
 import com.zbw.secondskill.service.UserService;
-import com.zbw.secondskill.common.utils.MD5Utils;
+import com.zbw.secondskill.service.model.UserModel;
+import com.zbw.secondskill.validator.ValidationResult;
+import com.zbw.secondskill.validator.ValidatorImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
 
 /**
  * @ClassName UserServiceImpl.java
@@ -32,83 +28,105 @@ import java.security.NoSuchAlgorithmException;
 public class UserServiceImpl implements UserService {
 
     @Autowired
-    private UserDoMapper userDoMapper;
+    private UserDOMapper userDOMapper;
 
     @Autowired
-    private UserPasswordDoMapper userPasswordDoMapper;
-
-    @Autowired
-    private HttpServletRequest httpServletRequest;
+    private UserPasswordDOMapper userPasswordDOMapper;
 
     @Autowired
     private ValidatorImpl validator;
 
     @Override
-    public ResultDTO getUserById(Integer id) {
-        UserDo userDo = userDoMapper.selectByPrimaryKey(id);
-        if (userDo == null) {
-            return new ResultDTO(ResultEnum.ID_INVALID);
+    public UserModel getUserById(Integer id) {
+        //调用userdomapper获取到对应的用户dataobject
+        UserDO userDO = userDOMapper.selectByPrimaryKey(id);
+        if(userDO == null){
+            return null;
         }
-        UserDTO userDTO = new UserDTO();
-        //将userDo中的属性拷贝到userModel中的对应属性
-        BeanUtils.copyProperties(userDo, userDTO);
-        ResultDTO resultDTO = new ResultDTO(ResultEnum.SUCCESS);
-        resultDTO.setData(userDTO);
-        return resultDTO;
+        //通过用户id获取对应的用户加密密码信息
+        UserPasswordDO userPasswordDO = userPasswordDOMapper.selectByUserId(userDO.getId());
+
+        return convertFromDataObject(userDO,userPasswordDO);
     }
 
     @Override
-    @Transactional//加入事务注解
-    public ResultDTO register(String name, Byte gender, Integer age, String telephone,String password) {
+    @Transactional
+    public void register(UserModel userModel) throws BusinessException {
+        if(userModel == null){
+            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR);
+        }
+        ValidationResult result =  validator.validate(userModel);
+        if(result.isHasErrors()){
+            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR,result.getErrMsg());
+        }
 
-        if (StringUtils.isEmpty(telephone) || StringUtils.isEmpty(name) ||
-        gender == null || age == null) {
-            return new ResultDTO(ResultEnum.ILLEGAL_PARAMETER);
+
+
+        //实现model->dataobject方法
+        UserDO userDO = convertFromModel(userModel);
+        try{
+            userDOMapper.insertSelective(userDO);
+        }catch(DuplicateKeyException ex){
+            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR,"手机号已重复注册");
         }
-        UserDo userDo = new UserDo(name, gender, age, telephone);
-        userDo.setRegisterMode("byPhone");
-        try {
-            userDoMapper.insertSelective(userDo);
-        } catch (DuplicateEntityException e) {
-            return new ResultDTO(ResultEnum.TELEPHONE_EXISTED);
-        }
-        String pwd = null;
-        try {
-            pwd = MD5Utils.EncodeByMD5(password);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            return new ResultDTO(ResultEnum.PASSWORD_EXCEPTION);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-            return new ResultDTO(ResultEnum.PASSWORD_EXCEPTION);
-        }
-        UserPasswordDo userPasswordDo = new UserPasswordDo(pwd,userDo.getId());
-        userPasswordDoMapper.insertSelective(userPasswordDo);
-        return new ResultDTO(ResultEnum.SUCCESS);
+
+
+
+        userModel.setId(userDO.getId());
+
+        UserPasswordDO userPasswordDO = convertPasswordFromModel(userModel);
+        userPasswordDOMapper.insertSelective(userPasswordDO);
+
+        return;
     }
 
     @Override
-    public ResultDTO login(String telephone, String password) {
-        //通过用户手机获取用户信息
-        UserDo userDo = userDoMapper.selectByTelephone(telephone);
-        if (userDo == null) {
-            return new ResultDTO(ResultEnum.LOGIN_FAIL);
+    public UserModel validateLogin(String telphone, String encrptPassword) throws BusinessException {
+        //通过用户的手机获取用户信息
+        UserDO userDO = userDOMapper.selectByTelphone(telphone);
+        if(userDO == null){
+            throw new BusinessException(EmBusinessError.USER_LOGIN_FAIL);
         }
-        UserPasswordDo userPasswordDo = userPasswordDoMapper.selectByUserId(userDo.getId());
-        //比对用户信息内的加密密码是否和传输进来的密码相互匹配
-        String pwd = null;
-        try {
-            pwd = MD5Utils.EncodeByMD5(password);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        UserPasswordDO userPasswordDO = userPasswordDOMapper.selectByUserId(userDO.getId());
+        UserModel userModel = convertFromDataObject(userDO,userPasswordDO);
+
+        //比对用户信息内加密的密码是否和传输进来的密码相匹配
+        if(!StringUtils.equals(encrptPassword,userModel.getEncrptPassword())){
+            throw new BusinessException(EmBusinessError.USER_LOGIN_FAIL);
         }
-        if ( !pwd.equals(userPasswordDo.getEncrptPassword()) ) {
-            return new ResultDTO(ResultEnum.LOGIN_FAIL);
+        return userModel;
+    }
+
+
+    private UserPasswordDO convertPasswordFromModel(UserModel userModel){
+        if(userModel == null){
+            return null;
         }
-        this.httpServletRequest.getSession().setAttribute("IS_LOGIN", true);
-        this.httpServletRequest.getSession().setAttribute("LOGIN_USER", userDo.getId());
-        return new ResultDTO(ResultEnum.SUCCESS);
+        UserPasswordDO userPasswordDO = new UserPasswordDO();
+        userPasswordDO.setEncrptPassword(userModel.getEncrptPassword());
+        userPasswordDO.setUserId(userModel.getId());
+        return userPasswordDO;
+    }
+    private UserDO convertFromModel(UserModel userModel){
+        if(userModel == null){
+            return null;
+        }
+        UserDO userDO = new UserDO();
+        BeanUtils.copyProperties(userModel,userDO);
+
+        return userDO;
+    }
+    private UserModel convertFromDataObject(UserDO userDO, UserPasswordDO userPasswordDO){
+        if(userDO == null){
+            return null;
+        }
+        UserModel userModel = new UserModel();
+        BeanUtils.copyProperties(userDO,userModel);
+
+        if(userPasswordDO != null){
+            userModel.setEncrptPassword(userPasswordDO.getEncrptPassword());
+        }
+
+        return userModel;
     }
 }

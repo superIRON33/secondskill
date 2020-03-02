@@ -1,7 +1,8 @@
 package com.zbw.secondskill.service;
 
 
-import com.zbw.secondskill.model.dto.ResultDTO;
+import com.zbw.secondskill.error.BusinessException;
+import com.zbw.secondskill.service.model.UserModel;
 
 /**
  * @ClassName UserService.java
@@ -10,32 +11,13 @@ import com.zbw.secondskill.model.dto.ResultDTO;
  * @Date 2020年02月27日 21:51
  **/
 public interface UserService {
+    //通过用户ID获取用户对象的方法
+    UserModel getUserById(Integer id);
+    void register(UserModel userModel) throws BusinessException;
 
-    /**
-     * @Param [Integer id]
-     * @Return com.zbw.secondskill.model.dto.ResultDTO
-     * @Description 通过用户id获取用户对象的方法
-     * @Author zbw
-     * @Time 2020/2/27 21:54
-     * @return
+    /*
+    telphone:用户注册手机
+    password:用户加密后的密码
      */
-    ResultDTO getUserById(Integer id);
-
-    /**
-     * @Param [String name, Byte gender, Integer age, String telephone, String password]
-     * @Return com.zbw.secondskill.model.dto.ResultDTO
-     * @Description 实现用户注册
-     * @Author zbw
-     * @Time 2020/2/29 22:58
-     */
-    ResultDTO register(String name, Byte gender, Integer age, String telephone, String password);
-
-    /**
-     * @Param [String telephone, String password]
-     * @Return com.zbw.secondskill.model.dto.ResultDTO
-     * @Description 实现用户登陆
-     * @Author zbw
-     * @Time 2020/2/29 22:59
-     */
-    ResultDTO login(String telephone, String password);
+    UserModel validateLogin(String telphone,String encrptPassword) throws BusinessException;
 }

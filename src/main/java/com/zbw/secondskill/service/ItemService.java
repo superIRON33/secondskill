@@ -1,7 +1,7 @@
 package com.zbw.secondskill.service;
 
-import com.zbw.secondskill.model.ItemModel;
-import com.zbw.secondskill.model.dto.ResultDTO;
+import com.zbw.secondskill.error.BusinessException;
+import com.zbw.secondskill.service.model.ItemModel;
 
 import java.util.List;
 
@@ -13,48 +13,18 @@ import java.util.List;
  **/
 public interface ItemService {
 
-    /**
-     * @Param [ItemModel itemModel]
-     * @Return com.zbw.secondskill.model.dto.ResultDTO
-     * @Description 创建商品
-     * @Author zbw
-     * @Time 2020/2/29 22:52
-     */
-    ResultDTO createItem(ItemModel itemModel);
+    //创建商品
+    ItemModel createItem(ItemModel itemModel) throws BusinessException;
 
-    /**
-     * @Param []
-     * @Return com.zbw.secondskill.model.dto.ResultDTO
-     * @Description 商品列表浏览
-     * @Author zbw
-     * @Time 2020/2/29 22:53
-     */
-    ResultDTO listItem();
+    //商品列表浏览
+    List<ItemModel> listItem();
 
-    /**
-     * @Param []
-     * @Return com.zbw.secondskill.model.dto.ResultDTO
-     * @Description 查看商品详情
-     * @Author zbw
-     * @Time 2020/2/29 22:53
-     */
-    ResultDTO getItemById(Integer id);
+    //商品详情浏览
+    ItemModel getItemById(Integer id);
 
-    /**
-     * @Param [Integer itemId, Integer amount]
-     * @Return boolean
-     * @Description 减库存
-     * @Author zbw
-     * @Time 2020/3/1 17:18
-     */
-    boolean decreaseStock(Integer itemId, Integer amount);
+    //库存扣减
+    boolean decreaseStock(Integer itemId,Integer amount)throws BusinessException;
 
-    /**
-     * @Param [Integer itemId, Integer amount]
-     * @Return void
-     * @Description 增加销量
-     * @Author zbw
-     * @Time 2020/3/1 20:13
-     */
-    void increaseSales(Integer itemId, Integer amount);
+    //商品销量增加
+    void increaseSales(Integer itemId,Integer amount)throws BusinessException;
 }

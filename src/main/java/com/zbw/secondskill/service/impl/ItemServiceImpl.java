@@ -1,15 +1,17 @@
 package com.zbw.secondskill.service.impl;
 
-import com.zbw.secondskill.common.enums.ResultEnum;
-import com.zbw.secondskill.common.validator.ValidationResult;
-import com.zbw.secondskill.common.validator.ValidatorImpl;
-import com.zbw.secondskill.dao.ItemDoMapper;
-import com.zbw.secondskill.dao.ItemStockDoMapper;
-import com.zbw.secondskill.model.ItemModel;
-import com.zbw.secondskill.model.dataobject.ItemDo;
-import com.zbw.secondskill.model.dataobject.ItemStockDo;
-import com.zbw.secondskill.model.dto.ResultDTO;
+import com.zbw.secondskill.dao.ItemDOMapper;
+import com.zbw.secondskill.dao.ItemStockDOMapper;
+import com.zbw.secondskill.dataobject.ItemDO;
+import com.zbw.secondskill.dataobject.ItemStockDO;
+import com.zbw.secondskill.error.BusinessException;
+import com.zbw.secondskill.error.EmBusinessError;
 import com.zbw.secondskill.service.ItemService;
+import com.zbw.secondskill.service.PromoService;
+import com.zbw.secondskill.service.model.ItemModel;
+import com.zbw.secondskill.service.model.PromoModel;
+import com.zbw.secondskill.validator.ValidationResult;
+import com.zbw.secondskill.validator.ValidatorImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,108 +34,116 @@ public class ItemServiceImpl implements ItemService {
     private ValidatorImpl validator;
 
     @Autowired
-    private ItemDoMapper itemDoMapper;
+    private ItemDOMapper itemDOMapper;
 
     @Autowired
-    private ItemStockDoMapper itemStockDoMapper;
+    private PromoService promoService;
 
-    private ItemDo convertItemDOFromItemModel(ItemModel itemModel) {
-        if (itemModel == null) {
+    @Autowired
+    private ItemStockDOMapper itemStockDOMapper;
+
+    private ItemDO convertItemDOFromItemModel(ItemModel itemModel){
+        if(itemModel == null){
             return null;
         }
-        ItemDo itemDo = new ItemDo();
-        BeanUtils.copyProperties(itemModel, itemDo);
-        itemDo.setPrice(itemModel.getPrice().doubleValue());
-        return itemDo;
+        ItemDO itemDO = new ItemDO();
+        BeanUtils.copyProperties(itemModel,itemDO);
+        itemDO.setPrice(itemModel.getPrice().doubleValue());
+        return itemDO;
     }
-
-    private ItemStockDo convertItemStockDOFromItemModel(ItemModel itemModel) {
-        if (itemModel == null) {
+    private ItemStockDO convertItemStockDOFromItemModel(ItemModel itemModel){
+        if(itemModel == null){
             return null;
         }
-        ItemStockDo itemStockDo = new ItemStockDo();
-        BeanUtils.copyProperties(itemModel, itemStockDo);
-        itemStockDo.setItemId(itemModel.getId());
-        itemStockDo.setStock(itemModel.getStock());
-        return itemStockDo;
+        ItemStockDO itemStockDO = new ItemStockDO();
+        itemStockDO.setItemId(itemModel.getId());
+        itemStockDO.setStock(itemModel.getStock());
+        return itemStockDO;
     }
 
     @Override
     @Transactional
-    public ResultDTO createItem(ItemModel itemModel) {
-        //校验传入参数
-        if (validator.validate(itemModel).isHasErrors()) {
-            return new ResultDTO(ResultEnum.ILLEGAL_PARAMETER);
+    public ItemModel createItem(ItemModel itemModel) throws BusinessException {
+        //校验入参
+        ValidationResult result = validator.validate(itemModel);
+        if(result.isHasErrors()){
+            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR,result.getErrMsg());
         }
-        ItemDo itemDo = this.convertItemDOFromItemModel(itemModel);
+
+        //转化itemmodel->dataobject
+        ItemDO itemDO = this.convertItemDOFromItemModel(itemModel);
+
         //写入数据库
-        itemDoMapper.insertSelective(itemDo);
-        itemModel.setId(itemDo.getId());
+        itemDOMapper.insertSelective(itemDO);
+        itemModel.setId(itemDO.getId());
 
-        ItemStockDo itemStockDo = this.convertItemStockDOFromItemModel(itemModel);
-        itemStockDoMapper.insertSelective(itemStockDo);
-        //创建返回完成的对象
-        Object itemDo1 = itemDoMapper.selectByPrimaryKey(itemModel.getId());
-        if (itemDo1 != null) {
-            ResultDTO resultDTO = new ResultDTO(ResultEnum.SUCCESS);
-            resultDTO.setData(itemDo1);
-            return resultDTO;
-        } else {
-            return new ResultDTO(ResultEnum.CREATE_ITEM_FAIL);
-        }
+        ItemStockDO itemStockDO = this.convertItemStockDOFromItemModel(itemModel);
 
+        itemStockDOMapper.insertSelective(itemStockDO);
+
+        //返回创建完成的对象
+        return this.getItemById(itemModel.getId());
     }
 
     @Override
-    public ResultDTO listItem() {
-        List<ItemDo> itemDoList = itemDoMapper.listItem();
-        List<ItemModel> itemModelList = itemDoList.stream().map(itemDo -> {
-            ItemStockDo itemStockDo = itemStockDoMapper.selectByItemId(itemDo.getId());
-            ItemModel itemModel = this.convertModelFromDataObject(itemDo, itemStockDo);
+    public List<ItemModel> listItem() {
+        List<ItemDO> itemDOList = itemDOMapper.listItem();
+        List<ItemModel> itemModelList =  itemDOList.stream().map(itemDO -> {
+            ItemStockDO itemStockDO = itemStockDOMapper.selectByItemId(itemDO.getId());
+            ItemModel itemModel = this.convertModelFromDataObject(itemDO,itemStockDO);
             return itemModel;
         }).collect(Collectors.toList());
-        ResultDTO resultDTO = new ResultDTO(ResultEnum.SUCCESS);
-        resultDTO.setData(itemModelList);
-        return resultDTO;
+        return itemModelList;
     }
 
     @Override
-    public ResultDTO getItemById(Integer id) {
-        ItemDo itemDo = itemDoMapper.selectByPrimaryKey(id);
-        if (itemDo == null) {
-            return new ResultDTO(ResultEnum.ID_INVALID);
+    public ItemModel getItemById(Integer id) {
+        ItemDO itemDO = itemDOMapper.selectByPrimaryKey(id);
+        if(itemDO == null){
+            return null;
         }
-        ItemStockDo itemStockDo = itemStockDoMapper.selectByItemId(itemDo.getId());
-        ItemModel itemModel = convertModelFromDataObject(itemDo, itemStockDo);
-        ResultDTO resultDTO = new ResultDTO(ResultEnum.SUCCESS);
-        resultDTO.setData(itemModel);
-        return resultDTO;
-    }
+        //操作获得库存数量
+        ItemStockDO itemStockDO = itemStockDOMapper.selectByItemId(itemDO.getId());
 
-    @Override
-    @Transactional
-    public boolean decreaseStock(Integer itemId, Integer amount) {
-        int affectedRow = itemStockDoMapper.decreaseStock(itemId, amount);
-        if (affectedRow > 0) {
-            //减库存成功
-            return true;
-        } {
-            //减库存失败
-            return false;
+
+        //将dataobject->model
+        ItemModel itemModel = convertModelFromDataObject(itemDO,itemStockDO);
+
+        //获取活动商品信息
+        PromoModel promoModel = promoService.getPromoByItemId(itemModel.getId());
+        if(promoModel != null && promoModel.getStatus().intValue() != 3){
+            itemModel.setPromoModel(promoModel);
         }
-    }
-
-    @Override
-    @Transactional
-    public void increaseSales(Integer itemId, Integer amount) {
-        itemDoMapper.increaseSales(itemId, amount);
-    }
-
-    private ItemModel convertModelFromDataObject(ItemDo itemDo, ItemStockDo itemStockDo) {
-        ItemModel itemModel = new ItemModel();
-        BeanUtils.copyProperties(itemDo, itemModel);
-        itemModel.setPrice(new BigDecimal(itemDo.getPrice()));
-        itemModel.setStock(itemStockDo.getStock());
         return itemModel;
     }
+
+    @Override
+    @Transactional
+    public boolean decreaseStock(Integer itemId, Integer amount) throws BusinessException {
+        int affectedRow =  itemStockDOMapper.decreaseStock(itemId,amount);
+        if(affectedRow > 0){
+            //更新库存成功
+            return true;
+        }else{
+            //更新库存失败
+            return false;
+        }
+
+    }
+
+    @Override
+    @Transactional
+    public void increaseSales(Integer itemId, Integer amount) throws BusinessException {
+        itemDOMapper.increaseSales(itemId,amount);
+    }
+
+    private ItemModel convertModelFromDataObject(ItemDO itemDO,ItemStockDO itemStockDO){
+        ItemModel itemModel = new ItemModel();
+        BeanUtils.copyProperties(itemDO,itemModel);
+        itemModel.setPrice(new BigDecimal(itemDO.getPrice()));
+        itemModel.setStock(itemStockDO.getStock());
+
+        return itemModel;
+    }
+
 }

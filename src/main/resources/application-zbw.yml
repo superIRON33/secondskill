@@ -1,7 +1,7 @@
 spring:
   datasource:
     name: secondskill
-    url: jdbc:mysql://127.0.0.1:3306/secondskill
+    url: jdbc:mysql://127.0.0.1:3306/secondskill?useUnicode=true&characterEncoding=UTF-8
     username: root
     password: root
     #配置数据源

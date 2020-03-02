@@ -19,7 +19,7 @@
             <property name="forceBigDecimals" value="false" />
         </javaTypeResolver>
         <!--生成DataObject类存放位置-->
-        <javaModelGenerator targetPackage="com.zbw.secondskill.model.dataobject" targetProject="src/main/java">
+        <javaModelGenerator targetPackage="com.zbw.secondskill.dataobject" targetProject="src/main/java">
             <property name="enableSubPackages" value="true" />
             <property name="trimStrings" value="true" />
         </javaModelGenerator>
@@ -38,13 +38,13 @@
         </javaClientGenerator>
 
         <!--生成对应表及类名-->
-<!--        <table tableName="user_info" domainObjectName="UserDo" enableCountByExample="false"-->
+<!--        <table tableName="user_info" domainObjectName="UserDO" enableCountByExample="false"-->
 <!--        enableUpdateByExample="false" enableDeleteByExample="false"-->
 <!--        enableSelectByExample="false" selectByExampleQueryId="false"></table>-->
-<!--        <table tableName="user_password" domainObjectName="UserPasswordDo" enableCountByExample="false"-->
+<!--        <table tableName="user_password" domainObjectName="UserPasswordDO" enableCountByExample="false"-->
 <!--               enableUpdateByExample="false" enableDeleteByExample="false"-->
 <!--               enableSelectByExample="false" selectByExampleQueryId="false"></table>-->
-        <table tableName="sequence_info" domainObjectName="SequenceDO" enableCountByExample="false"
+        <table tableName="promo" domainObjectName="PromoDO" enableCountByExample="false"
                enableUpdateByExample="false" enableDeleteByExample="false"
                enableSelectByExample="false" selectByExampleQueryId="false"></table>
     </context>
