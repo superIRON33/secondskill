@@ -9,14 +9,23 @@ import javax.validation.Validator;
 import java.util.Set;
 
 /**
- * Created by hzllb on 2018/11/18.
- */
+ * @ClassName ValidatorImpl.java
+ * @Description //参数校验实现类
+ * @Author ZBW
+ * @Date 2020年02月29日 23:09
+ **/
 @Component
 public class ValidatorImpl implements InitializingBean{
 
     private Validator validator;
 
-    //实现校验方法并返回校验结果
+    /**
+     * @Param [Object bean]
+     * @Return com.zbw.secondskill.validator.ValidationResult
+     * @Description //实现校验方法并返回校验结果
+     * @Author zbw
+     * @Time 2020/3/3 0:25
+     */
     public ValidationResult validate(Object bean){
         final ValidationResult result = new ValidationResult();
         Set<ConstraintViolation<Object>> constraintViolationSet = validator.validate(bean);

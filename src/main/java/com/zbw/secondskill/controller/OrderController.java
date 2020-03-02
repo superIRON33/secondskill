@@ -28,8 +28,7 @@ public class OrderController extends BaseController {
     private HttpServletRequest httpServletRequest;
 
     //封装下单请求
-    @RequestMapping(value = "/createorder",method = {RequestMethod.POST},consumes={CONTENT_TYPE_FORMED})
-    @ResponseBody
+    @PostMapping("/create")
     public CommonReturnType createOrder(@RequestParam(name="itemId")Integer itemId,
                                         @RequestParam(name="amount")Integer amount,
                                         @RequestParam(name="promoId",required = false)Integer promoId) throws BusinessException {

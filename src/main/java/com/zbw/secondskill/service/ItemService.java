@@ -13,18 +13,48 @@ import java.util.List;
  **/
 public interface ItemService {
 
-    //创建商品
+    /**
+     * @Param [ItemModel itemModel]
+     * @Return com.zbw.secondskill.service.model.ItemModel
+     * @Description //创建商品
+     * @Author zbw
+     * @Time 2020/3/3 0:15
+     */
     ItemModel createItem(ItemModel itemModel) throws BusinessException;
 
-    //商品列表浏览
+    /**
+     * @Param []
+     * @Return List<com.zbw.secondskill.service.model.ItemModel>
+     * @Description 商品列表浏览
+     * @Author zbw
+     * @Time 2020/3/3 0:15
+     */
     List<ItemModel> listItem();
 
-    //商品详情浏览
+    /**
+     * @Param Integer id
+     * @Return com.zbw.secondskill.service.model.ItemModel
+     * @Description 商品详情浏览
+     * @Author zbw
+     * @Time 2020/3/3 0:16
+     */
     ItemModel getItemById(Integer id);
 
-    //库存扣减
+    /**
+     * @Param [Integer itemId,Integer amount]
+     * @Return boolean
+     * @Description 库存扣减
+     * @Author zbw
+     * @Time 2020/3/3 0:16
+     */
     boolean decreaseStock(Integer itemId,Integer amount)throws BusinessException;
 
-    //商品销量增加
+    /**
+     * @Param [Integer itemId,Integer amount]
+     * @Return void
+     * @Description 商品销量增加
+     * @Author zbw
+     * @Time 2020/3/3 0:17
+     */
     void increaseSales(Integer itemId,Integer amount)throws BusinessException;
 }

@@ -1,10 +1,10 @@
 package com.zbw.secondskill.controller.viewobject;
 
 /**
- * @ClassName ItemController.java
+ * @ClassName ZuulException.java
  * @Description //商品controller
  * @Author ZBW
- * @Date 2020年03月01日 12:13
+ * @Date 2020年02月29日 12:19
  **/
 public class ZuulException extends RuntimeException {
 }

@@ -35,8 +35,7 @@ public class UserController  extends BaseController{
     private HttpServletRequest httpServletRequest;
 
     //用户注册接口
-    @RequestMapping(value = "/register",method = {RequestMethod.POST},consumes={CONTENT_TYPE_FORMED})
-    @ResponseBody
+    @PostMapping(value = "/register")
     public CommonReturnType register(@RequestParam(name="telphone")String telphone,
                                      @RequestParam(name="otpCode")String otpCode,
                                      @RequestParam(name="name")String name,
@@ -78,8 +77,7 @@ public class UserController  extends BaseController{
 
 
     //用户获取otp短信接口
-    @RequestMapping(value = "/getotp",method = {RequestMethod.POST},consumes={CONTENT_TYPE_FORMED})
-    @ResponseBody
+    @PostMapping(value = "/getotp")
     public CommonReturnType getOtp(@RequestParam(name="telphone")String telphone){
         //需要按照一定的规则生成OTP验证码
         Random random = new Random();
@@ -95,8 +93,7 @@ public class UserController  extends BaseController{
     }
 
 
-    @RequestMapping("/get")
-    @ResponseBody
+    @GetMapping(value = "/user")
     public CommonReturnType getUser(@RequestParam(name="id") Integer id) throws BusinessException {
         //调用service服务获取对应id的用户对象并返回给前端
         UserModel userModel = userService.getUserById(id);
@@ -111,6 +108,13 @@ public class UserController  extends BaseController{
         return CommonReturnType.create(userVO);
     }
 
+    /**
+     * @Param [UserModel userModel]
+     * @Return com.zbw.secondskill.viewobject.UserVO
+     * @Description UserModel领域模型转化为UserVO
+     * @Author zbw
+     * @Time 2020/3/2 23:23
+     */
     private UserVO convertFromModel(UserModel userModel){
         if(userModel == null){
             return null;
@@ -122,8 +126,7 @@ public class UserController  extends BaseController{
 
 
     //用户登陆接口
-    @RequestMapping(value = "/login",method = {RequestMethod.POST},consumes={CONTENT_TYPE_FORMED})
-    @ResponseBody
+    @PostMapping(value = "/login")
     public CommonReturnType login(@RequestParam(name="telphone")String telphone,
                                   @RequestParam(name="password")String password) throws BusinessException, UnsupportedEncodingException, NoSuchAlgorithmException {
 

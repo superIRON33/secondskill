@@ -7,9 +7,9 @@ package com.zbw.secondskill.error;
  * @Date 2020年02月29日 13:55
  **/
 public interface CommonError {
+
     public int getErrCode();
     public String getErrMsg();
     public CommonError setErrMsg(String errMsg);
-
 
 }
