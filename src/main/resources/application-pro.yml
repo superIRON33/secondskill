@@ -1,14 +1,14 @@
 spring:
   datasource:
     name: secondskill
-    url: jdbc:mysql://127.0.0.1:3306/secondskill
+    url: jdbc:mysql://127.0.0.1:3306/secondskill?useUnicode=true&characterEncoding=UTF-8
     username: root
-    password:
+    password: WDTKzbw_njupt2020!
 #   配置数据源
     type: com.alibaba.druid.pool.DruidDataSource
     driverClassName: com.mysql.jdbc.Driver
   redis:
     database: 0
     host: 127.0.0.1
-    password:
+    password: wdtk3366999.
     port: 6379

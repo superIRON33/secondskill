@@ -25,7 +25,7 @@
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
 
-    select 
+    select
     <include refid="Base_Column_List" />
     from promo
     where id = #{id,jdbcType=INTEGER}
@@ -38,7 +38,7 @@
   <insert id="insert" parameterType="com.zbw.secondskill.dataobject.PromoDO">
 
     insert into promo (id, promo_name, start_date,end_date,
-      item_id, promo_item_price)
+    item_id, promo_item_price)
     values (#{id,jdbcType=INTEGER}, #{promoName,jdbcType=VARCHAR}, #{startDate,jdbcType=TIMESTAMP},  #{endDate,jdbcType=TIMESTAMP},
     #{itemId,jdbcType=INTEGER}, #{promoItemPrice,jdbcType=DOUBLE})
   </insert>
@@ -112,10 +112,10 @@
 
     update promo
     set promo_name = #{promoName,jdbcType=VARCHAR},
-      start_date = #{startDate,jdbcType=TIMESTAMP},
-      end_date = #{endDate,jdbcType=TIMESTAMP},
-      item_id = #{itemId,jdbcType=INTEGER},
-      promo_item_price = #{promoItemPrice,jdbcType=DOUBLE}
+    start_date = #{startDate,jdbcType=TIMESTAMP},
+    end_date = #{endDate,jdbcType=TIMESTAMP},
+    item_id = #{itemId,jdbcType=INTEGER},
+    promo_item_price = #{promoItemPrice,jdbcType=DOUBLE}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>
