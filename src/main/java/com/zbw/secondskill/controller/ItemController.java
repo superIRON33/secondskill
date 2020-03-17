@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/item")
 @CrossOrigin(origins = {"*"},allowCredentials = "true")
-public class ItemController extends BaseController {
+public class ItemController {
 
     @Autowired
     private ItemService itemService;

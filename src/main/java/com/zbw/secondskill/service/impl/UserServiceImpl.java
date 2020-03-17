@@ -91,7 +91,9 @@ public class UserServiceImpl implements UserService {
         UserModel userModel = convertFromDataObject(userDO,userPasswordDO);
 
         //比对用户信息内加密的密码是否和传输进来的密码相匹配
+        System.out.println(encrptPassword);
         if(!StringUtils.equals(encrptPassword,userModel.getEncrptPassword())){
+            System.out.println(encrptPassword + " " + userModel.getEncrptPassword());
             throw new BusinessException(EmBusinessError.USER_LOGIN_FAIL);
         }
         return userModel;

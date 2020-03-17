@@ -6,23 +6,20 @@ server:
     #最大工作线程数
     max-threads: 400
     #最小工作线程数
-    min-spare-threads: 1000
-    servlet:
-      #配置根路径
-      context-path: /secondskill
+    min-spare-threads: 10
 spring:
   #  springboot热部署配置
   devtools:
     restart:
       additional-paths: src/main/java
       enabled: true
+  #出现错误时, 直接抛出异常(便于异常统一处理，否则捕获不到404)
   mvc:
     throw-exception-if-no-handler-found: true
   resources:
     add-mappings: false
   profiles:
     active: pro
-
 
 mybatis:
   mapperLocations: classpath:mapping/*.xml

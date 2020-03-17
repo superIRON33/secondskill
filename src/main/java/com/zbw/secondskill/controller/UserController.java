@@ -129,7 +129,6 @@ public class UserController  extends BaseController{
     @PostMapping(value = "/login")
     public CommonReturnType login(@RequestParam(name="telphone")String telphone,
                                   @RequestParam(name="password")String password) throws BusinessException, UnsupportedEncodingException, NoSuchAlgorithmException {
-
         //入参校验
         if(org.apache.commons.lang3.StringUtils.isEmpty(telphone)||
                 org.springframework.util.StringUtils.isEmpty(password)){
